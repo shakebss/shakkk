@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MissionPlanner.Utilities;
 
 namespace MissionPlanner.Controls
 {
@@ -23,32 +24,40 @@ namespace MissionPlanner.Controls
         private void QuickViewOptions_Shown(object sender, EventArgs e)
         {
             // Populate combobox with variables
-            List<string> options = new List<string>();
-            object defaultsrc = MainV2.comPort.MAV.cs;
-            Type test = defaultsrc.GetType();
+            object thisBoxed = MainV2.comPort.MAV.cs;
+            Type test = thisBoxed.GetType();
+
+            List<Tuple<string, string>> fields = new List<Tuple<string, string>>();
+
             foreach (var field in test.GetProperties())
             {
                 // field.Name has the field's name.
-                object fieldValue;
-                TypeCode typeCode;
-                try
-                {
-                    fieldValue = field.GetValue(defaultsrc, null); // Get value
+                object fieldValue = field.GetValue(thisBoxed, null); // Get value
+                if (fieldValue == null)
+                    continue;
 
-                    if (fieldValue == null)
-                        continue;
-
-                    // Get the TypeCode enumeration. Multiple types get mapped to a common typecode.
-                    typeCode = Type.GetTypeCode(fieldValue.GetType());
-                }
-                catch
+                if (!fieldValue.IsNumber() && !(fieldValue is bool))
                 {
                     continue;
                 }
 
-                options.Add(field.Name);
+                if (field.Name.Contains("customfield"))
+                {
+                    if (CurrentState.custom_field_names.ContainsKey(field.Name))
+                    {
+                        string name = CurrentState.custom_field_names[field.Name];
+                        fields.Add(new Tuple<string, string>(field.Name, name));
+                    }
+                }
+                else
+                {
+                    fields.Add(new Tuple<string, string>(field.Name, field.Name));
+                }
             }
-            CMB_Source.DataSource = options;
+
+            CMB_Source.ValueMember = "Item1";
+            CMB_Source.DisplayMember = "Item2";
+            CMB_Source.DataSource = fields;
 
             // Initialize combobox selection
             CMB_Source.Text = (string)_qv.Tag;
@@ -79,7 +88,7 @@ namespace MissionPlanner.Controls
 
         private void CMB_Source_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Utilities.Settings.Instance[_qv.Name] = CMB_Source.Text;
+            Utilities.Settings.Instance[_qv.Name] = (string) CMB_Source.SelectedValue;
         }
 
         private void NUM_precision_ValueChanged(object sender, EventArgs e)
