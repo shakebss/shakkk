@@ -73,8 +73,8 @@ namespace MissionPlanner.Controls
             // Initialize custom color textbox and color picker button
             TXT_color.Enabled = CHK_customcolor.Checked;
             BUT_colorpicker.Enabled = CHK_customcolor.Checked;
-            TXT_color.Text = _qv.numberColor.Name;
-            BUT_colorpicker.BackColor = _qv.numberColor;
+            TXT_color.Text = _qv.numberColorBackup.Name;
+            BUT_colorpicker.BackColor = _qv.numberColorBackup;
         }
 
         private void CMB_Source_SelectedIndexChanged(object sender, EventArgs e)
