@@ -457,6 +457,21 @@ namespace MissionPlanner.GCSViews
                             QV.Tag = desc;
                         QV.desc = MainV2.comPort.MAV.cs.GetNameandUnit(desc);
 
+                        // set the number format
+                        string numberformat = Settings.Instance["quickView" + f + "_format"];
+                        if (numberformat != null)
+                        {
+                            QV.numberformat = numberformat;
+                        }
+
+                        // set the number color
+                        string numberColor = Settings.Instance["quickView" + f + "_color"];
+                        if (numberColor != null && numberColor != "default")
+                        {
+                            QV.numberColor = System.Drawing.ColorTranslator.FromHtml(numberColor);
+                            QV.numberColorBackup = QV.numberColor;
+                        }
+
                         // set databinding for value
                         QV.DataBindings.Clear();
                         try
