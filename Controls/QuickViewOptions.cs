@@ -132,12 +132,18 @@ namespace MissionPlanner.Controls
             {
                 BUT_colorpicker.BackColor = System.Drawing.ColorTranslator.FromHtml("#"+TXT_color.Text);
                 Utilities.Settings.Instance[_qv.Name + "_color"] = "#"+TXT_color.Text;
+                return;
             }
-            if (System.Drawing.Color.FromName(TXT_color.Text).IsKnownColor)
+            try
             {
                 BUT_colorpicker.BackColor = System.Drawing.ColorTranslator.FromHtml(TXT_color.Text);
-                Utilities.Settings.Instance[_qv.Name + "_color"] = TXT_color.Text;
             }
+            catch(Exception)
+            {
+                // Not a valid color string
+                return;
+            }
+            Utilities.Settings.Instance[_qv.Name + "_color"] = TXT_color.Text;
         }
 
         private void BUT_colorpicker_Click(object sender, EventArgs e)
