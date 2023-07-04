@@ -3836,10 +3836,10 @@ namespace MissionPlanner
             var desc = name;
 
             if (custom_field_names.ContainsKey(name))
-            {
-                desc = custom_field_names[name];
-                return desc;
-            }
+                {
+                    desc = custom_field_names[name];
+                    return desc;
+                }
             try
             {
                 var typeofthing = typeof(CurrentState).GetProperty(name);
@@ -3863,6 +3863,34 @@ namespace MissionPlanner
             return desc;
         }
 
+        // Return the name of a customfield variable from its description.
+        // Allocate the customfield if necessary
+        public static string GetCustomField(string desc)
+        {
+            if(custom_field_names.ContainsValue(desc))
+            {
+                // Find the key for this value
+                foreach (var pair in custom_field_names)
+                {
+                    if (pair.Value == desc)
+                    {
+                        return pair.Key;
+                    }
+                }
+            }
+            // Allocate a new custom field
+            for (int i = 0; i <= 19; i++)
+            {
+                string key = "customfield" + i.ToString();
+                if (!custom_field_names.ContainsKey(key))
+                {
+                    custom_field_names.Add(key, desc);
+                    return key;
+                }
+            }
+            // This should be unreachable, unless we run out of customfields to allocate
+            return "";
+        }
 
         /// <summary>
         ///     use for main serial port only
