@@ -3357,7 +3357,7 @@ namespace MissionPlanner
                             }
                         }
 
-                        GCSViews.FlightData.hudGStreamer.StartA(gststring);
+                        GCSViews.FlightData.hudGStreamer.Start(gststring);
                     }
                     catch (Exception ex)
                     {
@@ -3774,7 +3774,7 @@ namespace MissionPlanner
                                 {
                                     try
                                     {
-                                        var st = GCSViews.FlightData.hudGStreamer.StartA(cmds["gstream"]);
+                                        var st = GCSViews.FlightData.hudGStreamer.Start(cmds["gstream"]);
                                         if (st == null)
                                         {
                                             // prevent spam
